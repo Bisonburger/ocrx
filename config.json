@@ -1,0 +1,12 @@
+{
+  "subscriptionKey": "2ac02d916b67481cbeb6c88ca22477e0",
+  "ocr": {
+    "uriBase": "https://westus.api.cognitive.microsoft.com/vision/v2.0/ocr",
+    "imageUrl": "https://www.researchgate.net/profile/Philip_Johnston3/publication/257460358/figure/fig2/AS:203093967937545@1425432783552/Traditional-medication-label-Example-shown-to-patients-for-purpose-of-discussion-Color.png",
+    "params": {
+        "language": "unk",
+        "detectOrientation": "true"
+    }
+  }
+
+}

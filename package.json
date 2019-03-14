@@ -8,9 +8,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node main.js",
+    "start": "node ocr.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Matt Young (matthew.young@bisonworks.com)",
   "license": "ISC"
 }
