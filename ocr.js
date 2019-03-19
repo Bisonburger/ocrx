@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require('request');
+const request = require('request-promise-native');
 const config = require( './config.json' );
 
 const options = {
@@ -13,20 +13,19 @@ const options = {
     }
 };
 
-request.post(options, (error, response, body) => {
-  if (error) {
-    console.log('Error: ', error);
-    return;
-  }
+request.post(options)
+  .then( body => {
+    let jsonData = JSON.parse(body);
+    var ar = [];
 
-  let jsonData = JSON.parse(body);
-  let jsonResponse = JSON.stringify(jsonData, null, '  ');
-  var ar = [];
+    jsonData.regions.forEach( ({lines}) =>
+      lines.forEach( ({words}) =>
+        words.forEach( ({text}) =>
+          ar.push( text )
+        )
+      )
+    );
 
-  jsonData.regions.forEach( ({lines}) =>
-    lines.forEach( ({words}) =>
-      words.forEach( ({text}) =>
-      ar.push( text ) ) ) );
-
-  console.log( ar.join( " " ) );
-});
+    console.log( ar.join( " " ) );
+  })
+  .catch( error => console.log('Error: ', error) );
