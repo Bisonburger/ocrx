@@ -1,26 +1,40 @@
 'use strict';
 
 const request = require('request-promise-native');
+const test_data = require( './test-data.json' );
+
+var probs = [];
 
 
-var search = (term) =>
+var formTerms = ( input, window ) => {
+  var data = input.split( " " ),
+      terms = [],
+      idx = 0;
+
+  while( idx < data.length - 5 ){
+      terms.push(data.slice( idx, idx + 5 ).join( " " ) );
+      idx++;
+  }
+  return terms;
+};
+
+var generateCandidates = (term) =>
   request.get(`https://rxnav.nlm.nih.gov/REST/approximateTerm.json?term=${term}`)
     .then( JSON.parse )
-    .then( body => body.approximateGroup.candidate.shift() )
-    .then( candidate => candidate && candidate.rxcui )
-    .catch( console.log );
+    .then( body => body? body.approximateGroup.candidate : null )
+    .catch();
 
-var details = (rxcui) =>
-  request.get(`https://rxnav.nlm.nih.gov/REST/rxcui/${rxcui}/properties.json`)
+var detail = (candidate) =>
+  candidate &&
+  request.get(`https://rxnav.nlm.nih.gov/REST/rxcui/${candidate.rxcui}/properties.json`)
     .then( JSON.parse )
-    .then( body => body && body.properties )
-    .catch( console.log );
+    .then( body => body? Object.assign( body.properties, candidate ) : null )
+    .catch();
 
-var termComplex = `TAYLOR'S NEIGHBORHOOD PHARMACY 'goo BELMONT BLVD NASHVILLE. TN 37212 615460-6040 RX # 6001103 SMITH, JOHN RB DR. D. HAASE NASHVILLE, TN 37212 1900 BELMONT B
-LVD TAKE TWO TABLETS BY MOUTH 2 A DAY 120 METFORMIN HCL 500 MG TABL NO REFILLS NOG* 00378-0234-01 Ong: 0826/10`;
+var printDetail = properties => properties && properties.score > 40 && console.log( `Name: ${properties.name}; RXCUI: ${properties.rxcui}; Score: ${properties.score}; Rank: ${properties.rank}`);
 
-var termSimple = 'METFORMIN HCL 500 MG TABL NO REFILLS';
-
-search(  termSimple )
-  .then( details )
-  .then( properties => properties && console.log( `Name: ${properties.name}; RXCUI: ${properties.rxcui}`) );
+formTerms( test_data.termComplex, 5 )
+  .forEach( term =>
+              generateCandidates( term )
+                .then( candidates => candidates && candidates.forEach( (c) => detail(c).then( printDetail ) ) )
+                .catch() );
