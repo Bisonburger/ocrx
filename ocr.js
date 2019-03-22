@@ -13,19 +13,23 @@ const options = {
     }
 };
 
-request.post(options)
-  .then( body => {
-    let jsonData = JSON.parse(body);
-    var ar = [];
-
-    jsonData.regions.forEach( ({lines}) =>
+module.exports = async (context) => {
+  let body = null;
+  var ar = [];
+  try {
+    let res = await request.post(options);
+    body = JSON.parse(res);
+    body.regions.forEach( ({lines}) =>
       lines.forEach( ({words}) =>
         words.forEach( ({text}) =>
           ar.push( text )
         )
       )
     );
+  } catch (err){}
 
-    console.log( ar.join( " " ) );
-  })
-  .catch( error => console.log('Error: ', error) );
+  context.log( ar.join( " " ) );
+  return {
+    queueOutput: ar.join( " " );
+  };
+}
