@@ -44,7 +44,7 @@ var printDetail = properties => {
 }
 
 var start = async () => {
-  let terms = formTerms( test_data.termComplex, 5 );
+  let terms = formTerms( test_data.termComplex6, 5 );
   let candidates = await Promise.all( terms.map( generateCandidates ) );
   candidates = [].concat(...candidates); // flatten the candidates list
   let details = await Promise.all( candidates.map( generateDetail ) );

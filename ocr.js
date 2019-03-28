@@ -1,7 +1,9 @@
 'use strict';
 
 const request = require('request-promise-native');
-const config = require( './config.json' );
+var config = require( './config.json' );
+
+config.ocr.imageUrl = "https://bisonvisionstorage.blob.core.windows.net/test/label7.jpg";
 
 const options = {
     uri: config.ocr.uriBase,
@@ -13,7 +15,7 @@ const options = {
     }
 };
 
-module.exports = async (context) => {
+var start = async (context) => {
   let body = null;
   var ar = [];
   try {
@@ -28,8 +30,10 @@ module.exports = async (context) => {
     );
   } catch (err){}
 
-  context.log( ar.join( " " ) );
+  console.log( ar.join( " " ) );
   return {
-    queueOutput: ar.join( " " );
+    queueOutput: ar.join( " " )
   };
 }
+
+start();
