@@ -5,21 +5,21 @@ var config = require( './config.json' );
 
 config.ocr.imageUrl = "https://bisonvisionstorage.blob.core.windows.net/test/label7.jpg";
 
-const options = {
-    uri: config.ocr.uriBase,
-    qs: config.ocr.params,
-    body: '{"url": ' + '"' + config.ocr.imageUrl + '"}',
-    headers: {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key' : config.subscriptionKey
-    }
-};
+const options = ;
 
-var start = async (context) => {
+module.exports = async (imageUrl) => {
   let body = null;
   var ar = [];
   try {
-    let res = await request.post(options);
+    let res = await request.post({
+        uri: config.ocr.uriBase,
+        qs: config.ocr.params,
+        body: '{"url": ' + '"' + "https://bisonvisionstorage.blob.core.windows.net/test/label7.jpg" + '"}',
+        headers: {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key' : config.subscriptionKey
+        }
+    });
     body = JSON.parse(res);
     body.regions.forEach( ({lines}) =>
       lines.forEach( ({words}) =>
@@ -29,11 +29,5 @@ var start = async (context) => {
       )
     );
   } catch (err){}
-
-  console.log( ar.join( " " ) );
-  return {
-    queueOutput: ar.join( " " )
-  };
+  return ar.join( " " );
 }
-
-start();

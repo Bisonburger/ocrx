@@ -1,5 +1,5 @@
 {
-  "name": "wellrx-ocr",
+  "name": "ocrx",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -10,7 +10,8 @@
   "devDependencies": {},
   "scripts": {
     "start": "node ocr.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "func azure functionapp publish ocrx"
   },
   "author": "Matt Young (matthew.young@bisonworks.com)",
   "license": "ISC"
