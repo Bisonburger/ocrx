@@ -3,18 +3,18 @@
 const request = require('request-promise-native');
 var config = require( './config.json' );
 
-config.ocr.imageUrl = "https://bisonvisionstorage. blob.core.windows.net/test/label7.jpg";
+config.ocr.imageUrl = "https://ocrxa58e.blob.core.windows.net/incoming/label2.jpg";
 
 const options = {};
 
-var ocr = async (imageUrl) => {
+module.exports = async (imageUrl) => {
   let body = null;
   var ar = [];
   try {
     let res = await request.post({
         uri: config.ocr.uriBase,
         qs: config.ocr.params,
-        body: '{"url": ' + '"' + "https://bisonvisionstorage.blob.core.windows.net/test/label7.jpg" + '"}',
+        body: '{"url": ' + '"' + config.ocr.imageUrl + '"}',
         headers: {
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key' : config.subscriptionKey
@@ -28,8 +28,8 @@ var ocr = async (imageUrl) => {
         )
       )
     );
-  } catch (err){}
-  console.log( ar.join( " " ) );
+  } catch (err){
+      console.log( err );
+  }
+  return ( ar.join( " " ) );
 }
-
-ocr();
