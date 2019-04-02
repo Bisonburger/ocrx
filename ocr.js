@@ -1,23 +1,21 @@
 'use strict';
 
 const request = require('request-promise-native');
-var config = require( './config.json' );
 
-config.ocr.imageUrl = "https://ocrxa58e.blob.core.windows.net/incoming/label2.jpg";
-
-const options = {};
-
-module.exports = async (imageUrl) => {
+module.exports = async (imageName) => {
   let body = null;
   var ar = [];
   try {
     let res = await request.post({
-        uri: config.ocr.uriBase,
-        qs: config.ocr.params,
-        body: '{"url": ' + '"' + config.ocr.imageUrl + '"}',
+        uri: process.env.OCR_SVC_URI_BASE,
+        qs: {
+            "language": "unk",
+            "detectOrientation": "true"
+        },
+        body: '{"url": ' + '"' + process.env.OCR_IMG_URI_BASE + imageName + '"}',
         headers: {
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key' : config.subscriptionKey
+            'Ocp-Apim-Subscription-Key' : process.env.OCR_SUBSCRIPTION_KEY
         }
     });
     body = JSON.parse(res);

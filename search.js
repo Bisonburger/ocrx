@@ -1,7 +1,6 @@
 'use strict';
 
 const request = require('request-promise-native');
-const test_data = require( './test-data.json' );
 
 var formTerms = ( input, window ) => {
   var data = input.split( " " ),
@@ -21,7 +20,7 @@ var generateCandidates = async term => {
     let res = await request.get(`https://rxnav.nlm.nih.gov/REST/approximateTerm.json?term=${term}`);
     body = JSON.parse( res );
   }
-  catch( err ){}
+  catch( err ){ /*console.log(err)*/ }
   return body? body.approximateGroup.candidate : null;
 }
 
@@ -33,27 +32,25 @@ var generateDetail = async candidate => {
       body = JSON.parse( res );
     }
   }
-  catch( err ){}
+  catch( err ){ console.log( err ) }
   return body? Object.assign( body.properties, candidate ) : null;
 }
 
-var printDetail = properties => {
-  if( properties ){
-    console.log( `Name: ${properties.name}; RXCUI: ${properties.rxcui}; Score: ${properties.score}; Rank: ${properties.rank}`);
-  }
-}
+var printDetail = properties => (properties ) ? `Name: ${properties.name}; RXCUI: ${properties.rxcui}; Confidence: ${properties.score}%` : null;
 
-var start = async () => {
-  let terms = formTerms( test_data.termComplex6, 5 );
+module.exports = async ( searchText, context ) => {
+  //context.log( searchText );
+  let terms = formTerms( searchText,  process.env.SEARCH_TERM_LENGTH || 5);
+  context.log( `found ${terms.length} terms`);
   let candidates = await Promise.all( terms.map( generateCandidates ) );
   candidates = [].concat(...candidates); // flatten the candidates list
+  context.log( `found ${candidates.length} candidates`);
   let details = await Promise.all( candidates.map( generateDetail ) );
 
+  //context.log( `fetched details for ${details.length} items`)
   if( details )
     details = details.filter ( v => v != null )
                .sort( (a,b) => parseInt( b.score ) - parseInt( a.score ) );
 
-  details && printDetail( details[0] );
+  return details ? printDetail( details[0] ) : null;
 }
-
-start();

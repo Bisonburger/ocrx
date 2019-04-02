@@ -1,10 +1,10 @@
 
 var ocr = require("../ocr");
+var search = require( "../search");
 
 module.exports = async function (context, myBlob) {
-    let text = await ocr();
-    context && context.log( text );
-    context && context.log("JavaScript blob trigger function processed blob \n Name:", context.bindingData.name, "\n Blob Size:", myBlob.length, "Bytes");
-
-    if( !context ) console.log( text );
+    context.log( "Processing file " + context.bindingData.name );
+    let text = await ocr(context.bindingData.name);
+    let results = await search( text, context );
+    context.log( results );
 };
