@@ -3,11 +3,11 @@
 const request = require('request-promise-native');
 var config = require( './config.json' );
 
-config.ocr.imageUrl = "https://bisonvisionstorage.blob.core.windows.net/test/label7.jpg";
+config.ocr.imageUrl = "https://bisonvisionstorage. blob.core.windows.net/test/label7.jpg";
 
-const options = ;
+const options = {};
 
-module.exports = async (imageUrl) => {
+var ocr = async (imageUrl) => {
   let body = null;
   var ar = [];
   try {
@@ -29,5 +29,7 @@ module.exports = async (imageUrl) => {
       )
     );
   } catch (err){}
-  return ar.join( " " );
+  console.log( ar.join( " " ) );
 }
+
+ocr();

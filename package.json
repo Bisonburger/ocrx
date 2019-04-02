@@ -9,6 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "preinstall": "npm i -g azure-functions-core-tools && func extensions install --force",
     "start": "node ocr.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish": "func azure functionapp publish ocrx"
